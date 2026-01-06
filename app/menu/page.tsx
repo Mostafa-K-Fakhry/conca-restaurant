@@ -3,23 +3,22 @@ import AddToCartButton from '../../components/AddToCartButton';
 import CartTrigger from '../../components/CartTrigger';
 import UserMenu from '../../components/UserMenu';
 import CategoryNav from '../../components/CategoryNav';
-import { prisma } from "@/lib/prisma"; // <--- 1. استدعاء بريزما
+import { prisma } from "@/lib/prisma";
 
-// 2. أمر عشان الصفحة تكون ديناميكية وتحدث البيانات علطول
+// ده السطر المهم عشان الصفحة تكون ديناميكية
 export const dynamic = 'force-dynamic';
 
 export default async function MenuPage() {
-  // 3. جلب البيانات مباشرة من قاعدة البيانات
   const categories = await prisma.category.findMany({
     include: {
       products: {
-        where: { isAvailable: true }, // المنتجات المتاحة فقط
+        where: { isAvailable: true },
         include: {
           variants: true,
         },
       },
     },
-    orderBy: { sortOrder: 'asc' }, // ترتيب الأقسام
+    orderBy: { sortOrder: 'asc' },
   });
 
   return (
@@ -29,7 +28,6 @@ export default async function MenuPage() {
       <header className="bg-white sticky top-0 z-50 shadow-sm border-b border-gray-100">
         <div className="container mx-auto px-4 h-20 flex items-center justify-between">
           
-          {/* اللوجو */}
           <div className="flex items-center gap-3">
             <div className="bg-conca-red text-white w-10 h-10 rounded-lg flex items-center justify-center shadow-lg shadow-conca-red/20">
               <Utensils size={20} />
@@ -44,7 +42,6 @@ export default async function MenuPage() {
             </div>
           </div>
           
-          {/* الجزء الأيسر */}
           <div className="flex items-center gap-3">
             <UserMenu />
             <CartTrigger />
@@ -52,12 +49,11 @@ export default async function MenuPage() {
           
         </div>
 
-        {/* الناف بار المتحرك */}
         <CategoryNav categories={categories} />
 
       </header>
 
-      {/* --- البانر الترحيبي --- */}
+      {/* --- البانر --- */}
       <div className="relative bg-[#200508] text-white py-12 px-6 mb-8 overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-conca-red blur-[120px] opacity-30 rounded-full"></div>
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-conca-gold blur-[120px] opacity-20 rounded-full"></div>
@@ -72,7 +68,7 @@ export default async function MenuPage() {
         </div>
       </div>
 
-      {/* --- شبكة المنيو --- */}
+      {/* --- المنيو --- */}
       <div className="container mx-auto px-4 space-y-20">
         {categories.map((category) => (
           <section key={category.id} id={category.id} className="scroll-mt-48">
@@ -87,7 +83,6 @@ export default async function MenuPage() {
               {category.products.map((product) => (
                 <div key={product.id} className="group bg-white rounded-2xl border border-gray-100 hover:border-conca-red/30 hover:shadow-xl hover:shadow-conca-red/5 transition-all duration-300 overflow-hidden flex flex-col">
                   
-                  {/* --- 1. منطقة الصورة --- */}
                   <div className="relative h-48 w-full bg-gray-100 overflow-hidden">
                     {product.image ? (
                         <img 
@@ -103,7 +98,6 @@ export default async function MenuPage() {
                     )}
                   </div>
 
-                  {/* --- 2. محتوى الكارت --- */}
                   <div className="p-6 flex flex-col flex-1 justify-between">
                     <div>
                       <div className="flex justify-between items-start mb-3">
@@ -124,10 +118,19 @@ export default async function MenuPage() {
                           </span>
                           <div className="flex items-center gap-4">
                             <span className="font-bold text-conca-red text-lg">
-                              {/* تحويل السعر لرقم عشان نتجنب مشاكل الداتابيز */}
-                              {Number(variant.price)} <span className="text-xs font-normal text-gray-400">ج.م</span>
+                              {/* هنا حولنا السعر لرقم عشان العرض */}
+                              {Number(variant.price.toString())} <span className="text-xs font-normal text-gray-400">ج.م</span>
                             </span>
-                            <AddToCartButton product={product} variant={variant} />
+                            
+                            {/* وهنا حولناه لنص عشان الزرار ميزعلش - ده التعديل اللي هيحل المشكلة */}
+                            <AddToCartButton 
+                              product={product} 
+                              variant={{
+                                ...variant,
+                                price: variant.price.toString()
+                              }} 
+                            />
+                            
                           </div>
                         </div>
                       ))}
