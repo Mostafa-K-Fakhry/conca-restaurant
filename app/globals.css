@@ -1,26 +1,31 @@
 @import "tailwindcss";
 
+@theme {
+  /* ألوان الفخامة الجديدة */
+  --color-conca-red: #800020;    /* نبيتي غامق (Burgundy) - مريح وشيك */
+  --color-conca-gold: #D4AF37;   /* ذهبي موزون (Metallic Gold) */
+  --color-conca-dark: #2C2C2C;   /* رصاصي غامق للكتابة */
+  --color-conca-bg: #FAFAFA;     /* أبيض لؤلؤي للخلفية */
+}
+
+/* إعدادات الخطوط والحركة */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --foreground-rgb: 44, 44, 44;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  direction: rtl;
+  text-align: right;
+  background-color: var(--color-conca-bg);
+  color: var(--color-conca-dark);
+  font-feature-settings: "ss01", "ss02"; /* تحسين رسم الحروف العربية */
+}
+
+/* إخفاء شريط التمرير (عشان الشكل يبقى أنضف) */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }

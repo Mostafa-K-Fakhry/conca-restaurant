@@ -1,65 +1,69 @@
-import Image from "next/image";
+import Link from "next/link";
+import { Utensils, ChefHat, ArrowRight } from "lucide-react";
 
-export default function Home() {
+export default function LandingPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <main className="min-h-screen bg-[#200508] relative overflow-hidden flex flex-col items-center justify-center text-center px-4">
+      
+      {/* خلفية جمالية (إضاءة خافتة) */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-conca-red blur-[150px] opacity-20 rounded-full animate-pulse"></div>
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-conca-gold blur-[150px] opacity-10 rounded-full animate-pulse"></div>
+
+      <div className="relative z-10 max-w-2xl mx-auto space-y-8">
+        
+        {/* اللوجو والعنوان */}
+        <div className="flex flex-col items-center animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <div className="bg-white/10 backdrop-blur-md p-6 rounded-3xl mb-6 border border-white/10 shadow-2xl">
+            <Utensils size={48} className="text-conca-gold" />
+          </div>
+          <h1 className="text-5xl md:text-7xl font-black text-white mb-2 tracking-tight">
+            Conca <span className="text-conca-gold">D'oro</span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-gray-300 text-lg md:text-xl font-light tracking-widest uppercase">
+            Italian Taste Experience
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+        {/* الوصف */}
+        <p className="text-gray-400 text-sm md:text-base leading-relaxed max-w-lg mx-auto">
+          مرحباً بك في عالم المذاق الإيطالي الأصيل. استمتع بأشهى الأطباق المحضرة بعناية وشغف. سجل دخولك لتجربة كاملة أو تصفح المنيو كزائر.
+        </p>
+
+        {/* الأزرار الرئيسية */}
+        <div className="flex flex-col md:flex-row gap-4 justify-center w-full pt-4">
+          <Link 
+            href="/login" 
+            className="group relative px-8 py-4 bg-conca-red text-white rounded-xl font-bold overflow-hidden transition-all hover:scale-105 shadow-lg shadow-conca-red/30"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            <span className="relative z-10 flex items-center justify-center gap-2">
+              تسجيل الدخول <ArrowRight size={18} />
+            </span>
+          </Link>
+
+          <Link 
+            href="/register" 
+            className="px-8 py-4 bg-white text-gray-900 rounded-xl font-bold transition-all hover:scale-105 hover:bg-gray-50 shadow-lg"
           >
-            Documentation
-          </a>
+            إنشاء حساب جديد
+          </Link>
         </div>
-      </main>
-    </div>
+
+        {/* زر الزائر */}
+        <div className="pt-4">
+          <Link 
+            href="/menu" 
+            className="inline-flex items-center text-conca-gold hover:text-white transition-colors text-sm font-bold gap-1 border-b border-transparent hover:border-conca-gold pb-0.5"
+          >
+            الدخول كزائر (تصفح المنيو)
+          </Link>
+        </div>
+
+      </div>
+
+      {/* الحقوق */}
+      <footer className="absolute bottom-6 text-gray-600 text-xs">
+        © 2026 Conca D'oro. All rights reserved.
+      </footer>
+    </main>
   );
 }
