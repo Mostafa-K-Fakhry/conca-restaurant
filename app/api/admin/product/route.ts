@@ -10,7 +10,6 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json();
-    // زودنا image هنا
     const { nameAr, description, categoryId, variants, image } = body;
 
     if (!variants || variants.length === 0) {
@@ -22,7 +21,7 @@ export async function POST(req: Request) {
         nameAr,
         description,
         categoryId,
-        image, // <--- حفظ رابط الصورة
+        image,
         variants: {
           create: variants.map((v: any) => ({
             nameAr: v.nameAr,
@@ -46,12 +45,11 @@ export async function PUT(req: Request) {
 
   try {
     const body = await req.json();
-    // زودنا image هنا
     const { id, isAvailable, nameAr, description, categoryId, variants, image } = body;
 
     if (!id) return NextResponse.json({ error: "ID مطلوب" }, { status: 400 });
 
-    // (أ) حالة الإخفاء/الإظهار فقط
+    // (أ) حالة الإخفاء/الإظهار
     if (nameAr === undefined && isAvailable !== undefined) {
       const product = await prisma.product.update({
         where: { id },
@@ -68,7 +66,7 @@ export async function PUT(req: Request) {
           nameAr,
           description,
           categoryId,
-          image, // <--- تحديث رابط الصورة
+          image,
           variants: {
             deleteMany: {}, 
             create: variants.map((v: any) => ({
@@ -90,7 +88,7 @@ export async function PUT(req: Request) {
   }
 }
 
-// 3. الحذف (DELETE) - زي ما هو
+// 3. الحذف (DELETE) - (( تم التصحيح هنا ))
 export async function DELETE(req: Request) {
   const session = await getServerSession(authOptions);
   if (session?.user?.role !== "ADMIN") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -99,7 +97,8 @@ export async function DELETE(req: Request) {
   if (!id) return NextResponse.json({ error: "ID required" }, { status: 400 });
 
   try {
-    await prisma.variant.deleteMany({ where: { productId: id } });
+    // التصحيح: استخدام productVariant بدل variant
+    await prisma.productVariant.deleteMany({ where: { productId: id } });
     await prisma.product.delete({ where: { id } });
     return NextResponse.json({ success: true });
   } catch (error) {
