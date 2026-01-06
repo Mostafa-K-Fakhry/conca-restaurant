@@ -3,28 +3,24 @@ import AddToCartButton from '../../components/AddToCartButton';
 import CartTrigger from '../../components/CartTrigger';
 import UserMenu from '../../components/UserMenu';
 import CategoryNav from '../../components/CategoryNav';
+import { prisma } from "@/lib/prisma"; // <--- 1. استدعاء بريزما
 
-// 1. تحديث أنواع البيانات لاستقبال الصورة
-type Variant = { id: string; nameAr: string; price: string };
-type Product = { 
-  id: string; 
-  nameAr: string; 
-  description: string | null; 
-  image: string | null; // <--- ضيفنا الصورة هنا
-  variants: Variant[] 
-};
-type Category = { id: string; nameAr: string; products: Product[] };
-
-// دالة جلب البيانات
-async function getMenu() {
-  // تأكد إن الرابط هنا صح، لو انت رافع الموقع غيره لرابط الموقع
-  const res = await fetch('http://localhost:3000/api/menu', { cache: 'no-store' });
-  if (!res.ok) throw new Error('Failed to fetch menu');
-  return res.json();
-}
+// 2. أمر عشان الصفحة تكون ديناميكية وتحدث البيانات علطول
+export const dynamic = 'force-dynamic';
 
 export default async function MenuPage() {
-  const categories: Category[] = await getMenu();
+  // 3. جلب البيانات مباشرة من قاعدة البيانات
+  const categories = await prisma.category.findMany({
+    include: {
+      products: {
+        where: { isAvailable: true }, // المنتجات المتاحة فقط
+        include: {
+          variants: true,
+        },
+      },
+    },
+    orderBy: { sortOrder: 'asc' }, // ترتيب الأقسام
+  });
 
   return (
     <main className="min-h-screen pb-24 bg-[#FAFAFA]">
@@ -91,7 +87,7 @@ export default async function MenuPage() {
               {category.products.map((product) => (
                 <div key={product.id} className="group bg-white rounded-2xl border border-gray-100 hover:border-conca-red/30 hover:shadow-xl hover:shadow-conca-red/5 transition-all duration-300 overflow-hidden flex flex-col">
                   
-                  {/* --- 1. منطقة الصورة (جديد) --- */}
+                  {/* --- 1. منطقة الصورة --- */}
                   <div className="relative h-48 w-full bg-gray-100 overflow-hidden">
                     {product.image ? (
                         <img 
@@ -100,7 +96,6 @@ export default async function MenuPage() {
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                     ) : (
-                        // لو مفيش صورة بنعرض شكل افتراضي شيك
                         <div className="w-full h-full flex flex-col items-center justify-center text-gray-300 bg-gray-50">
                             <ImageIcon size={48} className="mb-2 opacity-20" />
                             <span className="text-xs font-bold opacity-40">Conca D'oro</span>
@@ -108,7 +103,7 @@ export default async function MenuPage() {
                     )}
                   </div>
 
-                  {/* --- 2. محتوى الكارت (نقلنا الـ padding هنا) --- */}
+                  {/* --- 2. محتوى الكارت --- */}
                   <div className="p-6 flex flex-col flex-1 justify-between">
                     <div>
                       <div className="flex justify-between items-start mb-3">
@@ -129,7 +124,8 @@ export default async function MenuPage() {
                           </span>
                           <div className="flex items-center gap-4">
                             <span className="font-bold text-conca-red text-lg">
-                              {variant.price} <span className="text-xs font-normal text-gray-400">ج.م</span>
+                              {/* تحويل السعر لرقم عشان نتجنب مشاكل الداتابيز */}
+                              {Number(variant.price)} <span className="text-xs font-normal text-gray-400">ج.م</span>
                             </span>
                             <AddToCartButton product={product} variant={variant} />
                           </div>
